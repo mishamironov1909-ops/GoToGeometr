@@ -1,998 +1,2680 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta name="theme-color" content="#070b1c">
 <title>GoToGeomtr</title>
 
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#050817;color:#fff;font-family:Arial,sans-serif}
-canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#060917;
+    font-family:Arial,Helvetica,sans-serif;
+    color:white;
+    user-select:none;
+    -webkit-user-select:none;
+    touch-action:none;
+}
+
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+}
+
+button{
+    font:inherit;
+    color:white;
+    -webkit-tap-highlight-color:transparent;
+}
+
+/* =========================
+   MENU
+========================= */
 
 #menu{
- position:fixed;inset:0;z-index:10;overflow:auto;text-align:center;
- padding:35px 12px;
- background:radial-gradient(circle at 50% 15%,#263f9d,#111838 35%,#050711 78%);
+    position:fixed;
+    inset:0;
+    z-index:10;
+    overflow-y:auto;
+    text-align:center;
+    padding:30px 12px 50px;
+    background:
+        radial-gradient(circle at 50% 18%,#28459d 0%,#151d4c 28%,#080b1c 68%,#03040c 100%);
 }
-.logo{
- font-size:clamp(48px,10vw,100px);font-weight:1000;font-style:italic;
- letter-spacing:-5px;text-shadow:0 6px #11152e,0 0 20px #45eaff,0 0 50px #45eaff;
+
+#logo{
+    margin-top:15px;
+    font-size:clamp(52px,10vw,100px);
+    line-height:.95;
+    font-weight:1000;
+    font-style:italic;
+    letter-spacing:-5px;
+    color:#fff;
+    transform:skew(-6deg);
+    text-shadow:
+        0 6px 0 #11152f,
+        0 0 15px #45eaff,
+        0 0 45px #45eaff;
 }
-.logo i{color:#45efff;font-style:normal}
-.small{opacity:.65;letter-spacing:3px;margin-top:8px;font-weight:bold}
-.buttons{margin:25px auto 10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+#logo span{
+    color:#48efff;
+}
+
+#tagline{
+    margin-top:13px;
+    font-size:13px;
+    letter-spacing:4px;
+    font-weight:bold;
+    opacity:.65;
+}
+
+.menuButtons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    margin:25px 0 12px;
+}
+
 .btn{
- border:2px solid #ffffff22;border-radius:14px;padding:13px 22px;color:#fff;
- background:linear-gradient(135deg,#21d8ff,#6357ff);font-size:16px;font-weight:900;
- cursor:pointer;box-shadow:0 5px #15183f;transition:.15s
+    border:2px solid #ffffff24;
+    border-radius:15px;
+    padding:13px 22px;
+    background:linear-gradient(135deg,#21dfff,#6058ff);
+    box-shadow:
+        0 5px 0 #171a45,
+        0 0 25px #3b8dff44;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:1000;
+    transition:.15s;
 }
-.btn:hover{transform:translateY(-2px);filter:brightness(1.15)}
-.btn:active{transform:translateY(3px);box-shadow:0 2px #15183f}
-.stats{opacity:.8;margin:12px}
+
+.btn:hover{
+    transform:translateY(-3px);
+    filter:brightness(1.12);
+}
+
+.btn:active{
+    transform:translateY(3px);
+    box-shadow:0 2px #171a45;
+}
+
+#stats{
+    margin:10px auto 15px;
+    font-size:14px;
+    opacity:.8;
+}
+
 #levels{
- width:min(1000px,95vw);margin:auto;padding:12px;
- display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));
- gap:9px;max-height:58vh;overflow:auto
+    width:min(1000px,95vw);
+    margin:auto;
+    padding:10px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(65px,1fr));
+    gap:9px;
+    max-height:58vh;
+    overflow-y:auto;
 }
-.level{
- height:60px;border:2px solid #ffffff1d;border-radius:13px;color:#fff;
- background:linear-gradient(145deg,#1a2860,#0d1330);
- font-weight:1000;font-size:17px;cursor:pointer;box-shadow:0 4px #070a19
-}
-.level:hover{border-color:#42eaff;transform:translateY(-2px)}
-.level.done{background:linear-gradient(145deg,#087c70,#123e53);border-color:#32f0d1}
-.level.locked{opacity:.28;cursor:not-allowed}
-.star{display:block;color:#fff044;font-size:11px}
 
-#ui{position:fixed;inset:0;z-index:4;pointer-events:none}
-.top{display:flex;justify-content:space-between;padding:12px;gap:8px}
+.levelButton{
+    height:62px;
+    border-radius:14px;
+    border:2px solid #ffffff1c;
+    background:linear-gradient(145deg,#1b2861,#0d1332);
+    box-shadow:0 4px 0 #060819;
+    color:#fff;
+    font-weight:1000;
+    font-size:17px;
+    cursor:pointer;
+}
+
+.levelButton:hover{
+    border-color:#43edff;
+    transform:translateY(-2px);
+}
+
+.levelButton.completed{
+    background:linear-gradient(145deg,#087c70,#123e54);
+    border-color:#35efd0;
+}
+
+.levelButton.locked{
+    opacity:.28;
+    cursor:not-allowed;
+}
+
+.done{
+    display:block;
+    color:#fff04a;
+    font-size:10px;
+    margin-top:3px;
+}
+
+/* =========================
+   GAME UI
+========================= */
+
+#gameUI{
+    position:fixed;
+    inset:0;
+    z-index:5;
+    pointer-events:none;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    padding:11px;
+}
+
 .info{
- padding:8px 11px;border:2px solid #ffffff1d;border-radius:12px;
- background:#050a19b8;backdrop-filter:blur(7px);font-size:13px;font-weight:900
-}
-#bar{
- position:absolute;top:55px;left:50%;transform:translateX(-50%);
- width:min(600px,62vw);height:8px;background:#0009;border-radius:20px;overflow:hidden
-}
-#fill{height:100%;width:0;background:linear-gradient(90deg,#39efff,#65ff92,#fff04b);box-shadow:0 0 15px #42efff}
-#hint{position:absolute;bottom:10px;width:100%;text-align:center;opacity:.55;font-size:12px}
-
-#mobile{
- position:fixed;right:20px;bottom:20px;z-index:6;display:none;
- width:90px;height:70px;border:2px solid #ffffff35;border-radius:20px;
- color:#fff;background:#172961dd;font-size:28px;font-weight:1000
+    padding:8px 11px;
+    border-radius:12px;
+    border:2px solid #ffffff1c;
+    background:#05091bbb;
+    backdrop-filter:blur(7px);
+    font-size:13px;
+    font-weight:1000;
 }
 
-#overlay{
- position:fixed;inset:0;z-index:20;display:none;align-items:center;justify-content:center;
- background:#02040dcc;backdrop-filter:blur(7px)
+#progressBar{
+    position:absolute;
+    top:55px;
+    left:50%;
+    transform:translateX(-50%);
+    width:min(600px,60vw);
+    height:8px;
+    overflow:hidden;
+    border-radius:20px;
+    background:#0009;
+    border:1px solid #ffffff22;
 }
-.box{
- width:min(430px,90vw);padding:30px 20px;text-align:center;border-radius:24px;
- border:2px solid #ffffff25;background:linear-gradient(145deg,#1b2a67,#090d22);
- box-shadow:0 20px 70px #000
+
+#progressFill{
+    width:0%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        #36eaff,
+        #5cff8d,
+        #fff04b
+    );
+    box-shadow:0 0 16px #43eaff;
 }
-.box h1{font-size:38px;margin:0 0 10px}
-.box p{opacity:.75;line-height:1.5}
-.box .btn{margin:5px}
+
+#gameHelp{
+    position:absolute;
+    bottom:10px;
+    width:100%;
+    text-align:center;
+    opacity:.5;
+    font-size:12px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+#jumpButton{
+    display:none;
+    position:fixed;
+    z-index:8;
+    right:20px;
+    bottom:20px;
+    width:90px;
+    height:70px;
+    border-radius:20px;
+    border:2px solid #ffffff30;
+    background:#14265ddd;
+    box-shadow:0 0 25px #31dfff33;
+    font-size:28px;
+    font-weight:1000;
+}
+
+/* =========================
+   RESULT
+========================= */
+
+#result{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:20;
+    align-items:center;
+    justify-content:center;
+    background:#02040ddd;
+    backdrop-filter:blur(8px);
+}
+
+.resultBox{
+    width:min(430px,90vw);
+    padding:30px 20px;
+    border-radius:25px;
+    border:2px solid #ffffff25;
+    background:linear-gradient(145deg,#1a2863,#090d22);
+    box-shadow:0 25px 80px #000;
+    text-align:center;
+}
+
+.resultBox h1{
+    font-size:40px;
+    margin-bottom:12px;
+}
+
+.resultBox p{
+    opacity:.75;
+    line-height:1.6;
+    margin-bottom:18px;
+}
+
+.resultButtons{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:6px;
+}
 
 @media(max-width:700px){
- #mobile{display:block}
- .info{font-size:10px;padding:7px 8px}
- #bar{top:49px;width:55vw}
- #hint{display:none}
+    #jumpButton{
+        display:block;
+    }
+
+    .info{
+        font-size:10px;
+        padding:7px 8px;
+    }
+
+    #progressBar{
+        top:48px;
+        width:55vw;
+    }
+
+    #gameHelp{
+        display:none;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<canvas id="c"></canvas>
+<canvas id="gameCanvas"></canvas>
+
+<!-- ================= MENU ================= -->
 
 <div id="menu">
-  <div class="logo">GoTo<i>Geomtr</i></div>
-  <div class="small">100 ORIGINAL LEVELS</div>
 
-  <div class="buttons">
-    <button class="btn" id="continue">▶ ПРОДОЛЖИТЬ</button>
-    <button class="btn" id="reset">↻ СБРОСИТЬ</button>
-  </div>
+    <div id="logo">
+        GoTo<span>Geomtr</span>
+    </div>
 
-  <div class="stats">
-    Открыто: <b id="unlocked">1</b>/100
-    &nbsp; • &nbsp;
-    Пройдено: <b id="completed">0</b>
-  </div>
+    <div id="tagline">
+        JUMP • RUN • MASTER
+    </div>
 
-  <div id="levels"></div>
+    <div class="menuButtons">
+        <button class="btn" id="continueButton">
+            ▶ ПРОДОЛЖИТЬ
+        </button>
+
+        <button class="btn" id="resetButton">
+            ↻ СБРОСИТЬ
+        </button>
+    </div>
+
+    <div id="stats">
+        Открыто: <b id="unlockedCount">1</b>/100
+        &nbsp; • &nbsp;
+        Пройдено: <b id="completedCount">0</b>
+    </div>
+
+    <div id="levels"></div>
+
 </div>
 
-<div id="ui" style="display:none">
-  <div class="top">
-    <div class="info">GoToGeomtr</div>
-    <div class="info">LEVEL <span id="levelNum">1</span></div>
-    <div class="info">💎 <span id="coinNum">0</span></div>
-  </div>
+<!-- ================= GAME UI ================= -->
 
-  <div id="bar"><div id="fill"></div></div>
-  <div id="hint">SPACE / ↑ / CLICK — ПРЫЖОК</div>
+<div id="gameUI" style="display:none">
+
+    <div class="topbar">
+        <div class="info">GoToGeomtr</div>
+
+        <div class="info">
+            LEVEL <span id="currentLevel">1</span>
+        </div>
+
+        <div class="info">
+            💎 <span id="coinCounter">0</span>
+        </div>
+    </div>
+
+    <div id="progressBar">
+        <div id="progressFill"></div>
+    </div>
+
+    <div id="gameHelp">
+        SPACE / ↑ / CLICK — ПРЫЖОК
+    </div>
+
 </div>
 
-<button id="mobile">↑</button>
+<button id="jumpButton">↑</button>
 
-<div id="overlay">
-  <div class="box">
-    <h1 id="title">🎉 ПОБЕДА!</h1>
-    <p id="description"></p>
-    <button class="btn" id="next">СЛЕДУЮЩИЙ</button>
-    <button class="btn" id="again">ЗАНОВО</button>
-    <button class="btn" id="back">МЕНЮ</button>
-  </div>
+<!-- ================= RESULT ================= -->
+
+<div id="result">
+
+    <div class="resultBox">
+
+        <h1 id="resultTitle">
+            🎉 ПОБЕДА!
+        </h1>
+
+        <p id="resultText"></p>
+
+        <div class="resultButtons">
+
+            <button class="btn" id="nextLevel">
+                СЛЕДУЮЩИЙ
+            </button>
+
+            <button class="btn" id="retryLevel">
+                ЗАНОВО
+            </button>
+
+            <button class="btn" id="backMenu">
+                МЕНЮ
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
 <script>
-const canvas=document.getElementById("c");
+"use strict";
+
+/* =========================================================
+   CANVAS
+========================================================= */
+
+const canvas=document.getElementById("gameCanvas");
 const ctx=canvas.getContext("2d");
 
-let W=innerWidth,H=innerHeight,DPR=1;
+let W=window.innerWidth;
+let H=window.innerHeight;
+let DPR=1;
 
 function resize(){
- W=innerWidth;H=innerHeight;
- DPR=Math.min(devicePixelRatio||1,2);
- canvas.width=W*DPR;
- canvas.height=H*DPR;
- canvas.style.width=W+"px";
- canvas.style.height=H+"px";
- ctx.setTransform(DPR,0,0,DPR,0,0);
+
+    W=window.innerWidth;
+    H=window.innerHeight;
+
+    DPR=Math.min(window.devicePixelRatio||1,2);
+
+    canvas.width=W*DPR;
+    canvas.height=H*DPR;
+
+    canvas.style.width=W+"px";
+    canvas.style.height=H+"px";
+
+    ctx.setTransform(
+        DPR,0,0,DPR,0,0
+    );
 }
-addEventListener("resize",resize);
+
+window.addEventListener("resize",resize);
 resize();
 
-/* ---------- SAVE ---------- */
+/* =========================================================
+   SAVE
+========================================================= */
 
-const KEY="GoToGeomtr_Save";
+const SAVE_KEY="GoToGeomtr_v2";
 
-let save;
-try{
- save=JSON.parse(localStorage.getItem(KEY))||{};
-}catch(e){save={}}
-
-save.unlocked=Math.max(1,Math.min(100,save.unlocked||1));
-save.completed=Array.isArray(save.completed)?save.completed:[];
-
-function saveIt(){
- localStorage.setItem(KEY,JSON.stringify(save));
-}
-
-/* ---------- MENU ---------- */
-
-const menu=document.getElementById("menu");
-const ui=document.getElementById("ui");
-const levels=document.getElementById("levels");
-const unlocked=document.getElementById("unlocked");
-const completed=document.getElementById("completed");
-
-function buildMenu(){
- unlocked.textContent=save.unlocked;
- completed.textContent=save.completed.length;
- levels.innerHTML="";
-
- for(let i=1;i<=100;i++){
-  const b=document.createElement("button");
-  b.className="level";
-
-  const done=save.completed.includes(i);
-  const open=i<=save.unlocked;
-
-  if(done)b.classList.add("done");
-  if(!open)b.classList.add("locked");
-
-  b.innerHTML=open
-    ? i+(done?'<span class="star">★ ПРОЙДЕН</span>':'')
-    : i+'<span class="star">🔒</span>';
-
-  if(open)b.onclick=()=>start(i);
-
-  levels.appendChild(b);
- }
-}
-
-buildMenu();
-
-/* ---------- GAME ---------- */
-
-let playing=false;
-let current=1;
-let objects=[];
-let length=0;
-let camera=0;
-let coins=0;
-let attempts=0;
-let particles=[];
-let shake=0;
-let last=0;
-
-const TILE=64;
-
-const p={
- x:120,y:0,w:38,h:38,
- vx:6,vy:0,
- gravity:.78,
- jump:-14.3,
- ground:false,
- coyote:0,
- rot:0
+let save={
+    unlocked:1,
+    completed:[]
 };
 
-/* ---------- DETERMINISTIC RANDOM ---------- */
+try{
 
-function rnd(n){
- const x=Math.sin(n*127.731+current*83.17)*43758.5453;
- return x-Math.floor(x);
+    const stored=
+        JSON.parse(
+            localStorage.getItem(SAVE_KEY)
+        );
+
+    if(stored){
+
+        if(
+            typeof stored.unlocked==="number"
+        ){
+            save.unlocked=
+                Math.max(
+                    1,
+                    Math.min(100,stored.unlocked)
+                );
+        }
+
+        if(
+            Array.isArray(stored.completed)
+        ){
+            save.completed=
+                stored.completed.filter(
+                    n=>Number.isInteger(n)&&n>=1&&n<=100
+                );
+        }
+    }
+
+}catch(error){}
+
+function saveProgress(){
+
+    try{
+        localStorage.setItem(
+            SAVE_KEY,
+            JSON.stringify(save)
+        );
+    }catch(error){}
 }
 
-/* ---------- LEVEL ---------- */
+/* =========================================================
+   DOM
+========================================================= */
 
-function createLevel(n){
- current=n;
+const menu=
+    document.getElementById("menu");
 
- const a=[];
- let x=0;
+const gameUI=
+    document.getElementById("gameUI");
 
- const ground=H*.72;
+const levels=
+    document.getElementById("levels");
 
- a.push({t:"block",x:0,y:ground,w:1000,h:500});
+const result=
+    document.getElementById("result");
 
- const difficulty=(n-1)/99;
+const unlockedCount=
+    document.getElementById("unlockedCount");
 
- for(let i=0;i<150;i++){
+const completedCount=
+    document.getElementById("completedCount");
 
-  const r=rnd(i*11+1);
+const currentLevelText=
+    document.getElementById("currentLevel");
 
-  if(r>.07+difficulty*.08){
-   a.push({
-    t:"block",
-    x:x,
-    y:ground,
-    w:128+rnd(i*3)*150,
-    h:500
-   });
-  }else{
-   x+=80;
-  }
+const coinCounter=
+    document.getElementById("coinCounter");
 
-  if(rnd(i*17+3)<.12+difficulty*.26){
-   const count=(difficulty>.55&&rnd(i*8)<.4)?2:1;
+const progressFill=
+    document.getElementById("progressFill");
 
-   for(let s=0;s<count;s++){
-    a.push({
-     t:"spike",
-     x:x+45+s*38,
-     y:ground-38,
-     w:38,h:38
+const resultTitle=
+    document.getElementById("resultTitle");
+
+const resultText=
+    document.getElementById("resultText");
+
+const nextLevelButton=
+    document.getElementById("nextLevel");
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function updateMenu(){
+
+    unlockedCount.textContent=
+        save.unlocked;
+
+    completedCount.textContent=
+        save.completed.length;
+
+    levels.innerHTML="";
+
+    for(let i=1;i<=100;i++){
+
+        const button=
+            document.createElement("button");
+
+        button.className="levelButton";
+
+        const isOpen=
+            i<=save.unlocked;
+
+        const isDone=
+            save.completed.includes(i);
+
+        if(isDone){
+            button.classList.add("completed");
+        }
+
+        if(!isOpen){
+            button.classList.add("locked");
+        }
+
+        if(isOpen){
+
+            button.innerHTML=
+                i+
+                (
+                    isDone
+                    ? '<span class="done">★ ПРОЙДЕН</span>'
+                    : ''
+                );
+
+            button.addEventListener(
+                "click",
+                ()=>startGame(i)
+            );
+
+        }else{
+
+            button.innerHTML=
+                i+
+                '<span class="done">🔒</span>';
+        }
+
+        levels.appendChild(button);
+    }
+}
+
+updateMenu();
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let playing=false;
+let currentLevel=1;
+
+let levelObjects=[];
+let levelLength=0;
+
+let cameraX=0;
+
+let coins=0;
+
+let particles=[];
+let shake=0;
+
+let lastTime=0;
+
+/* =========================================================
+   PLAYER
+========================================================= */
+
+const player={
+
+    x:120,
+    y:0,
+
+    width:38,
+    height:38,
+
+    vx:6,
+    vy:0,
+
+    gravity:.78,
+    jumpPower:-14.5,
+
+    grounded:false,
+    coyote:0,
+
+    rotation:0
+};
+
+/* =========================================================
+   RANDOM
+========================================================= */
+
+function randomValue(n){
+
+    const x=
+        Math.sin(
+            n*91.731+
+            currentLevel*37.17
+        )*43758.5453123;
+
+    return x-Math.floor(x);
+}
+
+/* =========================================================
+   LEVEL GENERATOR
+========================================================= */
+
+function generateLevel(number){
+
+    currentLevel=number;
+
+    const objects=[];
+
+    let x=0;
+
+    const groundY=
+        H*.72;
+
+    const difficulty=
+        (number-1)/99;
+
+    /*
+       Старт
+    */
+
+    objects.push({
+        type:"block",
+        x:0,
+        y:groundY,
+        width:1200,
+        height:500
     });
-   }
-  }
 
-  if(rnd(i*23+9)<.17){
-   a.push({
-    t:"coin",
-    x:x+95,
-    y:ground-100-rnd(i*5)*80,
-    r:15,taken:false
-   });
-  }
+    /*
+       100 разных уровней.
 
-  if(difficulty>.2&&rnd(i*31+4)<.08){
-   a.push({
-    t:"pad",
-    x:x+130,
-    y:ground-18,
-    w:55,h:18
-   });
-  }
+       Уровни генерируются детерминированно:
+       один и тот же номер всегда создаёт
+       одну и ту же трассу.
+    */
 
-  if(i>8&&i%15===0){
-   a.push({
-    t:"portal",
-    x:x+160,
-    y:ground-120,
-    w:34,h:120
-   });
-  }
+    for(let i=0;i<155;i++){
 
-  if(difficulty>.35&&rnd(i*43)<.13){
-   a.push({
-    t:"block",
-    x:x+100,
-    y:ground-100,
-    w:64,h:100
-   });
-  }
+        const r=
+            randomValue(i*13+1);
 
-  x+=180+Math.floor(rnd(i*51)*180);
- }
+        /*
+           Земля
+        */
 
- a.push({
-  t:"finish",
-  x:x+250,
-  y:ground-150,
-  w:55,h:150
- });
+        if(
+            r >
+            .055+
+            difficulty*.085
+        ){
 
- return {a,len:x+500};
+            const width=
+                150+
+                Math.floor(
+                    randomValue(i*7+5)*180
+                );
+
+            objects.push({
+                type:"block",
+                x:x,
+                y:groundY,
+                width:width,
+                height:500
+            });
+
+        }else{
+
+            /*
+               Пропасть
+            */
+
+            x+=70+
+                Math.floor(
+                    randomValue(i*4+8)*55
+                );
+        }
+
+        /*
+           Шипы
+        */
+
+        const spikeChance=
+            .12+
+            difficulty*.29;
+
+        if(
+            randomValue(i*17+2)
+            <
+            spikeChance
+        ){
+
+            const amount=
+                difficulty>.55 &&
+                randomValue(i*23+4)<.4
+                ?2
+                :1;
+
+            for(
+                let s=0;
+                s<amount;
+                s++
+            ){
+
+                objects.push({
+                    type:"spike",
+                    x:x+45+s*38,
+                    y:groundY-38,
+                    width:38,
+                    height:38
+                });
+            }
+        }
+
+        /*
+           Верхние блоки
+        */
+
+        if(
+            number>10 &&
+            randomValue(i*31+9)
+            <
+            .08+
+            difficulty*.13
+        ){
+
+            objects.push({
+                type:"block",
+                x:x+110,
+                y:groundY-100,
+                width:64,
+                height:100
+            });
+        }
+
+        /*
+           Монетка
+        */
+
+        if(
+            randomValue(i*41+3)<.17
+        ){
+
+            objects.push({
+                type:"coin",
+                x:x+100,
+                y:
+                    groundY-
+                    100-
+                    randomValue(i*5)*90,
+                radius:15,
+                collected:false
+            });
+        }
+
+        /*
+           Jump Pad
+        */
+
+        if(
+            number>8 &&
+            randomValue(i*53+6)
+            <
+            .055+
+            difficulty*.045
+        ){
+
+            objects.push({
+                type:"pad",
+                x:x+150,
+                y:groundY-18,
+                width:56,
+                height:18
+            });
+        }
+
+        /*
+           Portal
+        */
+
+        if(
+            i>8 &&
+            i%16===0
+        ){
+
+            objects.push({
+                type:"portal",
+                x:x+160,
+                y:groundY-125,
+                width:36,
+                height:125
+            });
+        }
+
+        x+=
+            170+
+            Math.floor(
+                randomValue(i*61+7)*190
+            );
+    }
+
+    /*
+       Финиш
+    */
+
+    objects.push({
+        type:"finish",
+        x:x+250,
+        y:groundY-150,
+        width:58,
+        height:150
+    });
+
+    return{
+        objects:objects,
+        length:x+550
+    };
 }
 
-/* ---------- START ---------- */
+/* =========================================================
+   START
+========================================================= */
 
-function start(n){
+function startGame(number){
 
- if(n<1||n>100||n>save.unlocked)return;
+    if(
+        number<1||
+        number>100||
+        number>save.unlocked
+    ){
+        return;
+    }
 
- const data=createLevel(n);
+    const generated=
+        generateLevel(number);
 
- objects=data.a;
- length=data.len;
+    levelObjects=
+        generated.objects;
 
- current=n;
- coins=0;
- attempts=0;
- camera=0;
- particles=[];
- shake=0;
+    levelLength=
+        generated.length;
 
- p.x=150;
- p.y=H*.72-p.h;
- p.vx=6+Math.min(3,(n-1)*.025);
- p.vy=0;
- p.ground=false;
- p.coyote=0;
- p.rot=0;
+    cameraX=0;
+    coins=0;
+    particles=[];
+    shake=0;
 
- document.getElementById("levelNum").textContent=n;
- document.getElementById("coinNum").textContent=0;
- document.getElementById("fill").style.width="0%";
+    player.x=150;
+    player.y=
+        H*.72-
+        player.height;
 
- menu.style.display="none";
- ui.style.display="block";
- document.getElementById("overlay").style.display="none";
+    player.vx=
+        6+
+        Math.min(
+            3,
+            (number-1)*.025
+        );
 
- playing=true;
- last=performance.now();
+    player.vy=0;
+    player.grounded=false;
+    player.coyote=0;
+    player.rotation=0;
 
- requestAnimationFrame(loop);
+    currentLevelText.textContent=
+        number;
+
+    coinCounter.textContent=
+        "0";
+
+    progressFill.style.width=
+        "0%";
+
+    menu.style.display="none";
+    gameUI.style.display="block";
+    result.style.display="none";
+
+    playing=true;
+
+    lastTime=
+        performance.now();
+
+    requestAnimationFrame(gameLoop);
 }
 
-/* ---------- COLLISION ---------- */
+/* =========================================================
+   COLLISION
+========================================================= */
 
-function overlap(a,b){
- return a.x<b.x+b.w &&
-        a.x+a.w>b.x &&
-        a.y<b.y+b.h &&
-        a.y+a.h>b.y;
+function collision(a,b){
+
+    return(
+        a.x<b.x+b.width &&
+        a.x+a.width>b.x &&
+        a.y<b.y+b.height &&
+        a.y+a.height>b.y
+    );
 }
 
-/* ---------- JUMP ---------- */
+/* =========================================================
+   JUMP
+========================================================= */
 
 function jump(){
- if(!playing)return;
 
- if(p.ground||p.coyote>0){
-  p.vy=p.jump;
-  p.ground=false;
-  p.coyote=0;
+    if(!playing)return;
 
-  for(let i=0;i<10;i++)part(p.x+19,p.y+38,"#42efff");
+    if(
+        player.grounded||
+        player.coyote>0
+    ){
 
-  tone(480,.06);
- }
-}
+        player.vy=
+            player.jumpPower;
 
-/* ---------- INPUT ---------- */
+        player.grounded=false;
+        player.coyote=0;
 
-addEventListener("keydown",e=>{
- if(["Space","ArrowUp","KeyW"].includes(e.code)){
-  e.preventDefault();
-  jump();
- }
- if(e.code==="Escape"&&playing)backMenu();
-});
+        createJumpParticles();
 
-canvas.addEventListener("pointerdown",jump);
-document.getElementById("mobile").addEventListener("pointerdown",e=>{
- e.preventDefault();jump();
-});
-
-/* ---------- AUDIO ---------- */
-
-let ac=null;
-
-function tone(freq,dur){
- try{
-  ac=ac||new(window.AudioContext||window.webkitAudioContext)();
-  if(ac.state==="suspended")ac.resume();
-
-  const o=ac.createOscillator();
-  const g=ac.createGain();
-
-  o.type="square";
-  o.frequency.value=freq;
-  g.gain.setValueAtTime(.035,ac.currentTime);
-  g.gain.exponentialRampToValueAtTime(.001,ac.currentTime+dur);
-
-  o.connect(g);g.connect(ac.destination);
-  o.start();o.stop(ac.currentTime+dur);
- }catch(e){}
-}
-
-/* ---------- PARTICLES ---------- */
-
-function part(x,y,color){
- particles.push({
-  x,y,
-  vx:(Math.random()-.5)*7,
-  vy:(Math.random()-.5)*7,
-  life:1,
-  size:2+Math.random()*4,
-  color
- });
-}
-
-function burst(x,y,color,count=30){
- for(let i=0;i<count;i++)part(x,y,color);
-}
-
-function updateParticles(dt){
- for(let i=particles.length-1;i>=0;i--){
-  const q=particles[i];
-  q.x+=q.vx*dt;
-  q.y+=q.vy*dt;
-  q.vy+=.18*dt;
-  q.life-=.025*dt;
-  if(q.life<=0)particles.splice(i,1);
- }
-}
-
-/* ---------- UPDATE ---------- */
-
-function update(ms){
-
- const dt=Math.min(2,ms/16.666);
-
- p.vy+=p.gravity*dt;
- p.y+=p.vy*dt;
- p.ground=false;
-
- const rect={
-  x:p.x,y:p.y,w:p.w,h:p.h
- };
-
- for(const o of objects){
-
-  if(o.t!=="block")continue;
-  if(!overlap(rect,o))continue;
-
-  const oldBottom=p.y-p.vy*dt+p.h;
-
-  if(oldBottom<=o.y+10&&p.vy>=0){
-   p.y=o.y-p.h;
-   p.vy=0;
-   p.ground=true;
-   p.coyote=7;
-   p.rot=Math.round(p.rot/(Math.PI/2))*(Math.PI/2);
-  }
- }
-
- if(!p.ground)p.coyote-=dt;
-
- p.rot+=p.ground?0:.13*dt;
-
- /* spikes */
-
- for(const o of objects){
-  if(o.t!=="spike")continue;
-
-  const s={
-   x:o.x+7,y:o.y+9,
-   w:o.w-14,h:o.h-9
-  };
-
-  if(overlap(rect,s)){
-   die();
-   return;
-  }
- }
-
- /* pads */
-
- for(const o of objects){
-  if(o.t==="pad"&&overlap(rect,o)){
-   p.vy=-20;
-   burst(p.x+19,p.y+38,"#53f5ff",12);
-   tone(700,.07);
-  }
- }
-
- /* coins */
-
- for(const o of objects){
-  if(o.t!=="coin"||o.taken)continue;
-
-  const dx=p.x+19-o.x;
-  const dy=p.y+19-o.y;
-
-  if(Math.hypot(dx,dy)<35){
-   o.taken=true;
-   coins++;
-   document.getElementById("coinNum").textContent=coins;
-   burst(o.x,o.y,"#ffe84a",18);
-   tone(900,.08);
-  }
- }
-
- /* portals */
-
- for(const o of objects){
-  if(o.t==="portal"&&overlap(rect,o)){
-   p.vx+=.15;
-  }
- }
-
- /* finish */
-
- for(const o of objects){
-  if(o.t==="finish"&&overlap(rect,o)){
-   win();
-   return;
-  }
- }
-
- if(p.y>H+150){
-  die();
-  return;
- }
-
- const target=p.x-W*.28;
-
- camera+=(target-camera)*.1;
- camera=Math.max(0,Math.min(length-W,camera));
-
- const percent=Math.min(100,Math.max(0,p.x/length*100));
- document.getElementById("fill").style.width=percent+"%";
-
- updateParticles(dt);
-
- shake*=.88;
-}
-
-/* ---------- DEATH ---------- */
-
-function die(){
- if(!playing)return;
-
- playing=false;
- attempts++;
-
- burst(p.x+19,p.y+19,"#ff426f",35);
- burst(p.x+19,p.y+19,"#42eaff",20);
-
- shake=15;
- tone(100,.18);
-
- setTimeout(()=>{
-  showResult(
-   "💥 УПС!",
-   "Ты столкнулся с препятствием.<br>Попробуй ещё раз!",
-   false
-  );
- },250);
-}
-
-/* ---------- WIN ---------- */
-
-function win(){
- if(!playing)return;
-
- playing=false;
-
- if(!save.completed.includes(current))
-  save.completed.push(current);
-
- if(current<100)
-  save.unlocked=Math.max(save.unlocked,current+1);
-
- saveIt();
-
- burst(p.x,p.y,"#fff04a",60);
- burst(p.x,p.y,"#43efff",50);
-
- tone(523,.1);
- setTimeout(()=>tone(659,.1),100);
- setTimeout(()=>tone(784,.18),200);
-
- setTimeout(()=>{
-  showResult(
-   current===100?"👑 100 / 100!":"🎉 УРОВЕНЬ ПРОЙДЕН!",
-   `GoToGeomtr — уровень ${current}<br>💎 Монет собрано: <b>${coins}</b>`,
-   true
-  );
- },300);
-}
-
-/* ---------- RESULT ---------- */
-
-function showResult(title,text,won){
-
- document.getElementById("overlay").style.display="flex";
- document.getElementById("title").innerHTML=title;
- document.getElementById("description").innerHTML=text;
-
- document.getElementById("next").style.display=
-  won&&current<100?"inline-block":"none";
-}
-
-/* ---------- DRAW BACKGROUND ---------- */
-
-function background(){
-
- const hue=(current*37)%360;
-
- const g=ctx.createLinearGradient(0,0,0,H);
-
- g.addColorStop(0,`hsl(${hue},65%,18%)`);
- g.addColorStop(.55,`hsl(${(hue+30)%360},55%,10%)`);
- g.addColorStop(1,"#03050d");
-
- ctx.fillStyle=g;
- ctx.fillRect(0,0,W,H);
-
- /* stars */
-
- for(let i=0;i<90;i++){
-  const x=(i*193-current*40)%W;
-  const y=(i*83)%Math.floor(H*.65);
-
-  ctx.globalAlpha=.2+Math.abs(Math.sin(performance.now()/700+i))*.3;
-  ctx.fillStyle="#fff";
-  ctx.fillRect(x,y,2,2);
- }
-
- ctx.globalAlpha=1;
-
- /* mountains */
-
- ctx.fillStyle="#080e25";
- ctx.beginPath();
- ctx.moveTo(0,H*.67);
-
- for(let x=0;x<=W;x+=70){
-  ctx.lineTo(
-   x,
-   H*.67-Math.sin((x+camera*.12)*.006)*45
-  );
- }
-
- ctx.lineTo(W,H);
- ctx.lineTo(0,H);
- ctx.fill();
-
- /* floor */
-
- ctx.fillStyle="#08142b";
- ctx.fillRect(0,H*.72,W,H*.28);
-
- ctx.strokeStyle="#27dfff16";
- ctx.lineWidth=1;
-
- const off=-(camera%64);
-
- for(let x=off;x<W;x+=64){
-  ctx.beginPath();
-  ctx.moveTo(x,H*.72);
-  ctx.lineTo(x,H);
-  ctx.stroke();
- }
-
- for(let y=H*.72;y<H;y+=32){
-  ctx.beginPath();
-  ctx.moveTo(0,y);
-  ctx.lineTo(W,y);
-  ctx.stroke();
- }
-}
-
-/* ---------- DRAW OBJECTS ---------- */
-
-function drawObjects(){
-
- for(const o of objects){
-
-  const x=o.x-camera;
-
-  if(x<-150||x>W+150)continue;
-
-  if(o.t==="block"){
-
-   const hue=(current*37)%360;
-
-   const g=ctx.createLinearGradient(x,o.y,x+o.w,o.y+70);
-   g.addColorStop(0,`hsl(${hue},85%,62%)`);
-   g.addColorStop(1,`hsl(${(hue+65)%360},80%,38%)`);
-
-   ctx.fillStyle=g;
-   ctx.fillRect(x,o.y,o.w,o.h);
-
-   ctx.fillStyle="#fff2";
-   ctx.fillRect(x,o.y,o.w,5);
-
-   ctx.strokeStyle="#ffffff18";
-
-   for(let xx=x+16;xx<x+o.w;xx+=32){
-    ctx.beginPath();
-    ctx.moveTo(xx,o.y);
-    ctx.lineTo(xx,Math.min(o.y+64,o.y+o.h));
-    ctx.stroke();
-   }
-  }
-
-  if(o.t==="spike"){
-   ctx.save();
-   ctx.shadowBlur=14;
-   ctx.shadowColor="#ff416e";
-
-   const g=ctx.createLinearGradient(x,o.y,x,o.y+o.h);
-   g.addColorStop(0,"#fff");
-   g.addColorStop(.3,"#ff6688");
-   g.addColorStop(1,"#a80f46");
-
-   ctx.fillStyle=g;
-   ctx.beginPath();
-   ctx.moveTo(x,o.y+o.h);
-   ctx.lineTo(x+o.w/2,o.y);
-   ctx.lineTo(x+o.w,o.y+o.h);
-   ctx.closePath();
-   ctx.fill();
-
-   ctx.restore();
-  }
-
-  if(o.t==="coin"&&!o.taken){
-   ctx.save();
-
-   const s=.75+Math.abs(Math.sin(performance.now()/180+x))*.25;
-   ctx.translate(x,o.y);
-   ctx.scale(s,1);
-
-   ctx.shadowBlur=18;
-   ctx.shadowColor="#ffe84a";
-
-   const g=ctx.createRadialGradient(-5,-6,2,0,0,o.r);
-   g.addColorStop(0,"#fff");
-   g.addColorStop(.3,"#fff04c");
-   g.addColorStop(1,"#f59c00");
-
-   ctx.fillStyle=g;
-   ctx.beginPath();
-   ctx.arc(0,0,o.r,0,Math.PI*2);
-   ctx.fill();
-
-   ctx.strokeStyle="#fff9a0";
-   ctx.lineWidth=3;
-   ctx.stroke();
-
-   ctx.restore();
-  }
-
-  if(o.t==="pad"){
-   ctx.save();
-   ctx.shadowBlur=18;
-   ctx.shadowColor="#46edff";
-
-   ctx.fillStyle="#45edff";
-   ctx.beginPath();
-   ctx.roundRect(x,o.y,o.w,o.h,7);
-   ctx.fill();
-
-   ctx.fillStyle="#071126";
-   ctx.beginPath();
-   ctx.moveTo(x+o.w/2,o.y+3);
-   ctx.lineTo(x+o.w*.78,o.y+o.h-3);
-   ctx.lineTo(x+o.w*.22,o.y+o.h-3);
-   ctx.closePath();
-   ctx.fill();
-
-   ctx.restore();
-  }
-
-  if(o.t==="portal"){
-   ctx.save();
-   ctx.shadowBlur=25;
-   ctx.shadowColor="#b64cff";
-
-   ctx.fillStyle="#c855ff";
-   ctx.beginPath();
-   ctx.roundRect(x,o.y,o.w,o.h,17);
-   ctx.fill();
-
-   ctx.fillStyle="#080a20";
-   ctx.beginPath();
-   ctx.roundRect(x+7,o.y+7,o.w-14,o.h-14,12);
-   ctx.fill();
-
-   ctx.restore();
-  }
-
-  if(o.t==="finish"){
-   ctx.save();
-   ctx.shadowBlur=30;
-   ctx.shadowColor="#48ff9b";
-
-   ctx.fillStyle="#48ff9b";
-   ctx.fillRect(x,o.y,o.w,o.h);
-
-   const s=18;
-
-   for(let yy=o.y;yy<o.y+o.h;yy+=s){
-    for(let xx=x;xx<x+o.w;xx+=s){
-     if(((xx-x)/s+(yy-o.y)/s)%2===0){
-      ctx.fillStyle="#07152a";
-      ctx.fillRect(xx,yy,s,s);
-     }
+        sound(
+            480,
+            .06
+        );
     }
-   }
-
-   ctx.restore();
-  }
- }
 }
 
-/* ---------- PLAYER ---------- */
+/* =========================================================
+   INPUT
+========================================================= */
+
+window.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.code==="Space"||
+            event.code==="ArrowUp"||
+            event.code==="KeyW"
+        ){
+
+            event.preventDefault();
+            jump();
+        }
+
+        if(
+            event.code==="Escape"&&
+            playing
+        ){
+
+            returnToMenu();
+        }
+    }
+);
+
+canvas.addEventListener(
+    "pointerdown",
+    function(){
+        jump();
+    }
+);
+
+document
+.getElementById("jumpButton")
+.addEventListener(
+    "pointerdown",
+    function(event){
+
+        event.preventDefault();
+        jump();
+    }
+);
+
+/* =========================================================
+   AUDIO
+========================================================= */
+
+let audioContext=null;
+
+function sound(frequency,duration){
+
+    try{
+
+        if(!audioContext){
+
+            audioContext=
+                new(
+                    window.AudioContext||
+                    window.webkitAudioContext
+                )();
+        }
+
+        if(
+            audioContext.state==="suspended"
+        ){
+            audioContext.resume();
+        }
+
+        const oscillator=
+            audioContext.createOscillator();
+
+        const gain=
+            audioContext.createGain();
+
+        oscillator.type="square";
+
+        oscillator.frequency.value=
+            frequency;
+
+        gain.gain.setValueAtTime(
+            .035,
+            audioContext.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audioContext.currentTime+
+            duration
+        );
+
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime+
+            duration
+        );
+
+    }catch(error){}
+}
+
+/* =========================================================
+   PARTICLES
+========================================================= */
+
+function particle(
+    x,
+    y,
+    color
+){
+
+    particles.push({
+
+        x:x,
+        y:y,
+
+        vx:
+            (Math.random()-.5)*7,
+
+        vy:
+            (Math.random()-.5)*7,
+
+        life:1,
+
+        size:
+            2+
+            Math.random()*5,
+
+        color:color
+    });
+}
+
+function createJumpParticles(){
+
+    for(
+        let i=0;
+        i<12;
+        i++
+    ){
+
+        particle(
+            player.x+19,
+            player.y+38,
+            "#42eaff"
+        );
+    }
+}
+
+function explosion(){
+
+    for(
+        let i=0;
+        i<60;
+        i++
+    ){
+
+        particle(
+            player.x+19,
+            player.y+19,
+            i%2
+                ?"#ff4675"
+                :"#42eaff"
+        );
+    }
+
+    shake=16;
+
+    sound(
+        90,
+        .2
+    );
+}
+
+/* =========================================================
+   UPDATE
+========================================================= */
+
+function update(delta){
+
+    const dt=
+        Math.min(
+            2,
+            delta/16.666
+        );
+
+    /*
+       Физика
+    */
+
+    player.vy+=
+        player.gravity*dt;
+
+    player.y+=
+        player.vy*dt;
+
+    player.grounded=false;
+
+    const box={
+        x:player.x,
+        y:player.y,
+        width:player.width,
+        height:player.height
+    };
+
+    /*
+       Платформы
+    */
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        if(
+            object.type!=="block"
+        ){
+            continue;
+        }
+
+        if(
+            !collision(
+                box,
+                object
+            )
+        ){
+            continue;
+        }
+
+        const previousBottom=
+            player.y-
+            player.vy*dt+
+            player.height;
+
+        if(
+            previousBottom
+            <=object.y+10&&
+            player.vy>=0
+        ){
+
+            player.y=
+                object.y-
+                player.height;
+
+            player.vy=0;
+
+            player.grounded=true;
+
+            player.coyote=7;
+
+            player.rotation=
+                Math.round(
+                    player.rotation/
+                    (Math.PI/2)
+                )*
+                (Math.PI/2);
+        }
+    }
+
+    if(
+        !player.grounded
+    ){
+
+        player.coyote-=dt;
+
+        player.rotation+=
+            .13*dt;
+    }
+
+    /*
+       Шипы
+    */
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        if(
+            object.type!=="spike"
+        ){
+            continue;
+        }
+
+        const hit={
+            x:object.x+7,
+            y:object.y+8,
+            width:object.width-14,
+            height:object.height-8
+        };
+
+        if(
+            collision(
+                box,
+                hit
+            )
+        ){
+
+            playerDied();
+            return;
+        }
+    }
+
+    /*
+       Jump Pads
+    */
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        if(
+            object.type==="pad"&&
+            collision(box,object)
+        ){
+
+            player.vy=-20;
+
+            createJumpParticles();
+
+            sound(
+                700,
+                .07
+            );
+        }
+    }
+
+    /*
+       Монеты
+    */
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        if(
+            object.type!=="coin"||
+            object.collected
+        ){
+            continue;
+        }
+
+        const dx=
+            player.x+
+            19-
+            object.x;
+
+        const dy=
+            player.y+
+            19-
+            object.y;
+
+        if(
+            Math.hypot(dx,dy)<35
+        ){
+
+            object.collected=true;
+
+            coins++;
+
+            coinCounter.textContent=
+                coins;
+
+            for(
+                let i=0;
+                i<18;
+                i++
+            ){
+
+                particle(
+                    object.x,
+                    object.y,
+                    "#ffe84a"
+                );
+            }
+
+            sound(
+                900,
+                .08
+            );
+        }
+    }
+
+    /*
+       Порталы
+    */
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        if(
+            object.type==="portal"&&
+            collision(box,object)
+        ){
+
+            player.vx=
+                Math.min(
+                    player.vx+.015,
+                    10
+                );
+        }
+    }
+
+    /*
+       Финиш
+    */
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        if(
+            object.type==="finish"&&
+            collision(box,object)
+        ){
+
+            levelWon();
+            return;
+        }
+    }
+
+    /*
+       Падение
+    */
+
+    if(
+        player.y>
+        H+180
+    ){
+
+        playerDied();
+        return;
+    }
+
+    /*
+       Камера
+    */
+
+    const target=
+        player.x-
+        W*.28;
+
+    cameraX+=
+        (target-cameraX)*
+        .1;
+
+    cameraX=
+        Math.max(
+            0,
+            Math.min(
+                Math.max(
+                    0,
+                    levelLength-W
+                ),
+                cameraX
+            )
+        );
+
+    /*
+       Прогресс
+    */
+
+    const percentage=
+        Math.max(
+            0,
+            Math.min(
+                100,
+                player.x/
+                levelLength*
+                100
+            )
+        );
+
+    progressFill.style.width=
+        percentage+"%";
+
+    /*
+       Частицы
+    */
+
+    for(
+        let i=particles.length-1;
+        i>=0;
+        i--
+    ){
+
+        const p=
+            particles[i];
+
+        p.x+=p.vx*dt;
+        p.y+=p.vy*dt;
+
+        p.vy+=
+            .18*dt;
+
+        p.life-=
+            .025*dt;
+
+        if(
+            p.life<=0
+        ){
+
+            particles.splice(i,1);
+        }
+    }
+
+    shake*=.88;
+}
+
+/* =========================================================
+   DEATH
+========================================================= */
+
+function playerDied(){
+
+    if(!playing)return;
+
+    playing=false;
+
+    explosion();
+
+    setTimeout(
+        function(){
+
+            showResult(
+                "💥 ОЙ!",
+                "Ты попал в препятствие.<br>Попробуй ещё раз!",
+                false
+            );
+
+        },
+        250
+    );
+}
+
+/* =========================================================
+   WIN
+========================================================= */
+
+function levelWon(){
+
+    if(!playing)return;
+
+    playing=false;
+
+    if(
+        !save.completed.includes(
+            currentLevel
+        )
+    ){
+
+        save.completed.push(
+            currentLevel
+        );
+    }
+
+    if(
+        currentLevel<100
+    ){
+
+        save.unlocked=
+            Math.max(
+                save.unlocked,
+                currentLevel+1
+            );
+    }
+
+    saveProgress();
+
+    for(
+        let i=0;
+        i<80;
+        i++
+    ){
+
+        particle(
+            player.x,
+            player.y,
+            i%2
+                ?"#43efff"
+                :"#fff04a"
+        );
+    }
+
+    sound(523,.1);
+
+    setTimeout(
+        ()=>sound(659,.1),
+        100
+    );
+
+    setTimeout(
+        ()=>sound(784,.18),
+        200
+    );
+
+    setTimeout(
+        function(){
+
+            showResult(
+                currentLevel===100
+                    ?"👑 100 / 100!"
+                    :"🎉 УРОВЕНЬ ПРОЙДЕН!",
+                "GoToGeomtr<br>💎 Монет собрано: <b>"+
+                coins+
+                "</b>",
+                true
+            );
+
+        },
+        300
+    );
+}
+
+/* =========================================================
+   RESULT
+========================================================= */
+
+function showResult(
+    title,
+    text,
+    won
+){
+
+    result.style.display=
+        "flex";
+
+    resultTitle.innerHTML=
+        title;
+
+    resultText.innerHTML=
+        text;
+
+    nextLevelButton.style.display=
+        won&&currentLevel<100
+            ?"inline-block"
+            :"none";
+}
+
+/* =========================================================
+   DRAW BACKGROUND
+========================================================= */
+
+function drawBackground(){
+
+    const hue=
+        (currentLevel*37)%360;
+
+    const gradient=
+        ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            H
+        );
+
+    gradient.addColorStop(
+        0,
+        `hsl(${hue},65%,18%)`
+    );
+
+    gradient.addColorStop(
+        .55,
+        `hsl(${(hue+35)%360},55%,10%)`
+    );
+
+    gradient.addColorStop(
+        1,
+        "#03050e"
+    );
+
+    ctx.fillStyle=
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        W,
+        H
+    );
+
+    /*
+       Звёзды
+    */
+
+    for(
+        let i=0;
+        i<100;
+        i++
+    ){
+
+        const x=
+            ((i*191-
+            cameraX*.15)%W+W)%W;
+
+        const y=
+            (i*83)%(H*.63);
+
+        const alpha=
+            .15+
+            Math.abs(
+                Math.sin(
+                    performance.now()/700+i
+                )
+            )*.35;
+
+        ctx.globalAlpha=
+            alpha;
+
+        ctx.fillStyle=
+            "#ffffff";
+
+        ctx.fillRect(
+            x,
+            y,
+            2,
+            2
+        );
+    }
+
+    ctx.globalAlpha=1;
+
+    /*
+       Горы
+    */
+
+    ctx.fillStyle=
+        "#080e25";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        H*.68
+    );
+
+    for(
+        let x=0;
+        x<=W;
+        x+=70
+    ){
+
+        ctx.lineTo(
+            x,
+            H*.68-
+            Math.sin(
+                (x+cameraX*.12)*
+                .006
+            )*42
+        );
+    }
+
+    ctx.lineTo(
+        W,
+        H
+    );
+
+    ctx.lineTo(
+        0,
+        H
+    );
+
+    ctx.fill();
+
+    /*
+       Пол
+    */
+
+    ctx.fillStyle=
+        "#07142b";
+
+    ctx.fillRect(
+        0,
+        H*.72,
+        W,
+        H*.28
+    );
+
+    /*
+       Сетка
+    */
+
+    ctx.strokeStyle=
+        "#31ddff16";
+
+    ctx.lineWidth=1;
+
+    const offset=
+        -(cameraX%64);
+
+    for(
+        let x=offset;
+        x<W;
+        x+=64
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            H*.72
+        );
+
+        ctx.lineTo(
+            x,
+            H
+        );
+
+        ctx.stroke();
+    }
+
+    for(
+        let y=H*.72;
+        y<H;
+        y+=32
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            W,
+            y
+        );
+
+        ctx.stroke();
+    }
+}
+
+/* =========================================================
+   DRAW LEVEL
+========================================================= */
+
+function drawLevel(){
+
+    for(
+        const object
+        of levelObjects
+    ){
+
+        const x=
+            object.x-cameraX;
+
+        if(
+            x<-150||
+            x>W+150
+        ){
+            continue;
+        }
+
+        if(
+            object.type==="block"
+        ){
+
+            drawBlock(
+                x,
+                object.y,
+                object.width,
+                object.height
+            );
+        }
+
+        else if(
+            object.type==="spike"
+        ){
+
+            drawSpike(
+                x,
+                object.y,
+                object.width,
+                object.height
+            );
+        }
+
+        else if(
+            object.type==="coin"
+        ){
+
+            drawCoin(
+                x,
+                object.y,
+                object.radius,
+                object.collected
+            );
+        }
+
+        else if(
+            object.type==="pad"
+        ){
+
+            drawPad(
+                x,
+                object.y,
+                object.width,
+                object.height
+            );
+        }
+
+        else if(
+            object.type==="portal"
+        ){
+
+            drawPortal(
+                x,
+                object.y,
+                object.width,
+                object.height
+            );
+        }
+
+        else if(
+            object.type==="finish"
+        ){
+
+            drawFinish(
+                x,
+                object.y,
+                object.width,
+                object.height
+            );
+        }
+    }
+}
+
+/* =========================================================
+   BLOCK
+========================================================= */
+
+function drawBlock(
+    x,
+    y,
+    width,
+    height
+){
+
+    const hue=
+        (currentLevel*37)%360;
+
+    const gradient=
+        ctx.createLinearGradient(
+            x,
+            y,
+            x+width,
+            y+70
+        );
+
+    gradient.addColorStop(
+        0,
+        `hsl(${hue},85%,62%)`
+    );
+
+    gradient.addColorStop(
+        1,
+        `hsl(${(hue+65)%360},80%,38%)`
+    );
+
+    ctx.fillStyle=
+        gradient;
+
+    ctx.fillRect(
+        x,
+        y,
+        width,
+        height
+    );
+
+    ctx.fillStyle=
+        "#ffffff22";
+
+    ctx.fillRect(
+        x,
+        y,
+        width,
+        5
+    );
+
+    ctx.strokeStyle=
+        "#ffffff13";
+
+    for(
+        let xx=x+16;
+        xx<x+width;
+        xx+=32
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            xx,
+            y
+        );
+
+        ctx.lineTo(
+            xx,
+            Math.min(
+                y+64,
+                y+height
+            )
+        );
+
+        ctx.stroke();
+    }
+}
+
+/* =========================================================
+   SPIKE
+========================================================= */
+
+function drawSpike(
+    x,
+    y,
+    width,
+    height
+){
+
+    ctx.save();
+
+    ctx.shadowBlur=16;
+    ctx.shadowColor=
+        "#ff3f70";
+
+    const gradient=
+        ctx.createLinearGradient(
+            x,
+            y,
+            x,
+            y+height
+        );
+
+    gradient.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    gradient.addColorStop(
+        .25,
+        "#ff6688"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#a90e46"
+    );
+
+    ctx.fillStyle=
+        gradient;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x,
+        y+height
+    );
+
+    ctx.lineTo(
+        x+width/2,
+        y
+    );
+
+    ctx.lineTo(
+        x+width,
+        y+height
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   COIN
+========================================================= */
+
+function drawCoin(
+    x,
+    y,
+    radius,
+    collected
+){
+
+    if(collected)return;
+
+    ctx.save();
+
+    const scale=
+        .72+
+        Math.abs(
+            Math.sin(
+                performance.now()/180+x
+            )
+        )*.28;
+
+    ctx.translate(
+        x,
+        y
+    );
+
+    ctx.scale(
+        scale,
+        1
+    );
+
+    ctx.shadowBlur=20;
+    ctx.shadowColor=
+        "#ffe83d";
+
+    const gradient=
+        ctx.createRadialGradient(
+            -5,
+            -7,
+            2,
+            0,
+            0,
+            radius
+        );
+
+    gradient.addColorStop(
+        0,
+        "#ffffff"
+    );
+
+    gradient.addColorStop(
+        .3,
+        "#fff04b"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#ef9500"
+    );
+
+    ctx.fillStyle=
+        gradient;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        0,
+        radius,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fill();
+
+    ctx.strokeStyle=
+        "#fff8a0";
+
+    ctx.lineWidth=3;
+
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PAD
+========================================================= */
+
+function drawPad(
+    x,
+    y,
+    width,
+    height
+){
+
+    ctx.save();
+
+    ctx.shadowBlur=18;
+    ctx.shadowColor=
+        "#42edff";
+
+    ctx.fillStyle=
+        "#42edff";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x,
+        y,
+        width,
+        height,
+        7
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle=
+        "#061129";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        x+width/2,
+        y+3
+    );
+
+    ctx.lineTo(
+        x+width*.78,
+        y+height-3
+    );
+
+    ctx.lineTo(
+        x+width*.22,
+        y+height-3
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PORTAL
+========================================================= */
+
+function drawPortal(
+    x,
+    y,
+    width,
+    height
+){
+
+    ctx.save();
+
+    ctx.shadowBlur=30;
+    ctx.shadowColor=
+        "#b34cff";
+
+    ctx.fillStyle=
+        "#c953ff";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x,
+        y,
+        width,
+        height,
+        18
+    );
+
+    ctx.fill();
+
+    ctx.fillStyle=
+        "#070a20";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        x+7,
+        y+7,
+        width-14,
+        height-14,
+        12
+    );
+
+    ctx.fill();
+
+    ctx.restore();
+}
+
+/* =========================================================
+   FINISH
+========================================================= */
+
+function drawFinish(
+    x,
+    y,
+    width,
+    height
+){
+
+    ctx.save();
+
+    ctx.shadowBlur=30;
+    ctx.shadowColor=
+        "#42ff9b";
+
+    const size=18;
+
+    for(
+        let yy=y;
+        yy<y+height;
+        yy+=size
+    ){
+
+        for(
+            let xx=x;
+            xx<x+width;
+            xx+=size
+        ){
+
+            ctx.fillStyle=
+                (
+                    (
+                        Math.floor(
+                            (xx-x)/size
+                        )+
+                        Math.floor(
+                            (yy-y)/size
+                        )
+                    )%2===0
+                )
+                ?"#43ff9b"
+                :"#07172a";
+
+            ctx.fillRect(
+                xx,
+                yy,
+                size,
+                size
+            );
+        }
+    }
+
+    ctx.restore();
+}
+
+/* =========================================================
+   PLAYER
+========================================================= */
 
 function drawPlayer(){
 
- const x=p.x-camera+19;
- const y=p.y+19;
+    const x=
+        player.x-
+        cameraX+
+        19;
 
- ctx.save();
+    const y=
+        player.y+
+        19;
 
- ctx.translate(x,y);
- ctx.rotate(p.rot);
+    ctx.save();
 
- ctx.shadowBlur=20;
- ctx.shadowColor="#43efff";
+    ctx.translate(
+        x,
+        y
+    );
 
- const g=ctx.createLinearGradient(-20,-20,20,20);
+    ctx.rotate(
+        player.rotation
+    );
 
- g.addColorStop(0,"#fff");
- g.addColorStop(.25,"#54f5ff");
- g.addColorStop(.7,"#5270ff");
- g.addColorStop(1,"#8138dc");
+    ctx.shadowBlur=22;
+    ctx.shadowColor=
+        "#43eaff";
 
- ctx.fillStyle=g;
+    const gradient=
+        ctx.createLinearGradient(
+            -20,
+            -20,
+            20,
+            20
+        );
 
- ctx.beginPath();
- ctx.roundRect(-19,-19,38,38,7);
- ctx.fill();
+    gradient.addColorStop(
+        0,
+        "#ffffff"
+    );
 
- ctx.fillStyle="#07102b";
+    gradient.addColorStop(
+        .25,
+        "#51f5ff"
+    );
 
- ctx.fillRect(-11,-8,7,7);
- ctx.fillRect(4,-8,7,7);
- ctx.fillRect(-10,6,20,4);
+    gradient.addColorStop(
+        .7,
+        "#536eff"
+    );
 
- ctx.strokeStyle="#ffffff77";
- ctx.lineWidth=2;
- ctx.strokeRect(-16,-16,32,32);
+    gradient.addColorStop(
+        1,
+        "#8037d8"
+    );
 
- ctx.restore();
+    ctx.fillStyle=
+        gradient;
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -19,
+        -19,
+        38,
+        38,
+        7
+    );
+
+    ctx.fill();
+
+    /*
+       Лицо
+    */
+
+    ctx.fillStyle=
+        "#07102b";
+
+    ctx.fillRect(
+        -11,
+        -8,
+        7,
+        7
+    );
+
+    ctx.fillRect(
+        4,
+        -8,
+        7,
+        7
+    );
+
+    ctx.fillRect(
+        -10,
+        6,
+        20,
+        4
+    );
+
+    ctx.strokeStyle=
+        "#ffffff88";
+
+    ctx.lineWidth=2;
+
+    ctx.strokeRect(
+        -16,
+        -16,
+        32,
+        32
+    );
+
+    ctx.restore();
 }
 
-/* ---------- PARTICLES ---------- */
+/* =========================================================
+   PARTICLES
+========================================================= */
 
 function drawParticles(){
 
- for(const q of particles){
-  ctx.globalAlpha=Math.max(0,q.life);
-  ctx.fillStyle=q.color;
+    for(
+        const p
+        of particles
+    ){
 
-  ctx.beginPath();
-  ctx.arc(q.x-camera,q.y,q.size*q.life,0,Math.PI*2);
-  ctx.fill();
- }
+        ctx.globalAlpha=
+            Math.max(
+                0,
+                p.life
+            );
 
- ctx.globalAlpha=1;
+        ctx.fillStyle=
+            p.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x-cameraX,
+            p.y,
+            p.size*p.life,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fill();
+    }
+
+    ctx.globalAlpha=1;
 }
 
-/* ---------- DRAW ---------- */
+/* =========================================================
+   DRAW
+========================================================= */
 
-function draw(){
+function render(){
 
- ctx.save();
+    ctx.save();
 
- if(shake>1){
-  ctx.translate(
-   (Math.random()-.5)*shake,
-   (Math.random()-.5)*shake
-  );
- }
+    if(shake>1){
 
- background();
- drawObjects();
- drawParticles();
- drawPlayer();
+        ctx.translate(
+            (Math.random()-.5)*shake,
+            (Math.random()-.5)*shake
+        );
+    }
 
- ctx.restore();
+    drawBackground();
+    drawLevel();
+    drawParticles();
+    drawPlayer();
+
+    ctx.restore();
 }
 
-/* ---------- LOOP ---------- */
+/* =========================================================
+   LOOP
+========================================================= */
 
-function loop(now){
+function gameLoop(time){
 
- if(!playing)return;
+    if(!playing)return;
 
- const dt=Math.min(35,now-last);
- last=now;
+    const delta=
+        Math.min(
+            35,
+            time-lastTime
+        );
 
- update(dt);
- draw();
+    lastTime=time;
 
- if(playing)requestAnimationFrame(loop);
+    update(delta);
+    render();
+
+    if(playing){
+        requestAnimationFrame(
+            gameLoop
+        );
+    }
 }
 
-/* ---------- MENU ACTIONS ---------- */
+/* =========================================================
+   RESULT BUTTONS
+========================================================= */
 
-document.getElementById("continue").onclick=()=>{
- start(save.unlocked);
-};
+nextLevelButton.addEventListener(
+    "click",
+    function(){
 
-document.getElementById("reset").onclick=()=>{
- if(confirm("Сбросить весь прогресс GoToGeomtr?")){
-  save={unlocked:1,completed:[]};
-  saveIt();
-  buildMenu();
- }
-};
+        result.style.display=
+            "none";
 
-document.getElementById("next").onclick=()=>{
- document.getElementById("overlay").style.display="none";
- if(current<100)start(current+1);
-};
+        if(
+            currentLevel<100
+        ){
 
-document.getElementById("again").onclick=()=>{
- document.getElementById("overlay").style.display="none";
- start(current);
-};
+            startGame(
+                currentLevel+1
+            );
+        }
+    }
+);
 
-document.getElementById("back").onclick=backMenu;
+document
+.getElementById("retryLevel")
+.addEventListener(
+    "click",
+    function(){
 
-function backMenu(){
- playing=false;
- ui.style.display="none";
- document.getElementById("overlay").style.display="none";
- menu.style.display="block";
- buildMenu();
+        result.style.display=
+            "none";
+
+        startGame(
+            currentLevel
+        );
+    }
+);
+
+document
+.getElementById("backMenu")
+.addEventListener(
+    "click",
+    returnToMenu
+);
+
+document
+.getElementById("continueButton")
+.addEventListener(
+    "click",
+    function(){
+
+        startGame(
+            save.unlocked
+        );
+    }
+);
+
+document
+.getElementById("resetButton")
+.addEventListener(
+    "click",
+    function(){
+
+        if(
+            confirm(
+                "Сбросить весь прогресс GoToGeomtr?"
+            )
+        ){
+
+            save={
+                unlocked:1,
+                completed:[]
+            };
+
+            saveProgress();
+            updateMenu();
+        }
+    }
+);
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function returnToMenu(){
+
+    playing=false;
+
+    gameUI.style.display=
+        "none";
+
+    result.style.display=
+        "none";
+
+    menu.style.display=
+        "block";
+
+    updateMenu();
 }
 
-/* ---------- TOUCH ---------- */
+/* =========================================================
+   TOUCH
+========================================================= */
 
-let touchY=0;
+let touchStartY=0;
 
-addEventListener("touchstart",e=>{
- touchY=e.touches[0].clientY;
-},{passive:true});
+window.addEventListener(
+    "touchstart",
+    function(event){
 
-addEventListener("touchend",e=>{
- const y=e.changedTouches[0].clientY;
+        if(
+            event.touches.length
+        ){
 
- if(Math.abs(y-touchY)<60)jump();
-},{passive:true});
+            touchStartY=
+                event.touches[0].clientY;
+        }
+    },
+    {passive:true}
+);
 
-addEventListener("contextmenu",e=>e.preventDefault());
+window.addEventListener(
+    "touchend",
+    function(event){
 
-/* ---------- INITIAL ---------- */
+        if(
+            event.changedTouches.length
+        ){
 
-buildMenu();
+            const endY=
+                event.changedTouches[0].clientY;
+
+            if(
+                Math.abs(
+                    endY-touchStartY
+                )<60
+            ){
+
+                jump();
+            }
+        }
+    },
+    {passive:true}
+);
+
+window.addEventListener(
+    "contextmenu",
+    function(event){
+        event.preventDefault();
+    }
+);
+
+/* =========================================================
+   START MENU
+========================================================= */
+
+updateMenu();
+
 </script>
 
 </body>
